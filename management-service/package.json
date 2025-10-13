@@ -1,0 +1,26 @@
+{
+  "name": "management-service",
+  "version": "1.0.0",
+  "description": "Management microservice responsible for offices, branches, autoparks, and trucks.",
+  "main": "src/index.js",
+  "type": "module",
+  "author": "Atabek Kadirov for Hebent Tech",
+  "license": "ISC",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "nodemon src/index.js",
+    "migrate": "prisma migrate dev",
+    "generate": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.20.0",
+    "axios": "^1.7.3",
+    "dotenv": "^16.4.5",
+    "express": "^5.0.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4",
+    "prisma": "^5.20.0"
+  }
+}
