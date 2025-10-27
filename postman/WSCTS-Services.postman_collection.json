@@ -1,0 +1,4553 @@
+{
+  "info": {
+    "name": "WSCTS API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Complete API collection for Water Supply Committee Tracking System with RBAC"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{access_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "auth": {
+          "type": "noauth"
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      },
+      "response": [
+        {
+          "name": "Success",
+          "originalRequest": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          },
+          "status": "OK",
+          "code": 200,
+          "_postman_previewlanguage": "json",
+          "header": [
+            {
+              "key": "Content-Type",
+              "value": "application/json"
+            }
+          ],
+          "body": "{\n  \"success\": true,\n  \"message\": \"Server is healthy\",\n  \"data\": {\n    \"uptime\": 1234.56,\n    \"timestamp\": \"2025-01-26T10:00:00.000Z\",\n    \"environment\": \"development\"\n  }\n}"
+        }
+      ]
+    },
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register User",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"John\",\n  \"surname\": \"Doe\",\n  \"fathername\": \"Smith\",\n  \"phone\": \"+1234567890\",\n  \"password\": \"SecurePass123\",\n  \"roleId\": 1,\n  \"officeId\": 1,\n  \"birthdate\": \"1990-01-01\",\n  \"email\": \"john.doe@example.com\",\n  \"workEmail\": \"john.doe@work.com\",\n  \"workPhone\": \"+0987654321\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"John\",\n  \"surname\": \"Doe\",\n  \"fathername\": \"Smith\",\n  \"phone\": \"+1234567890\",\n  \"password\": \"SecurePass123\",\n  \"roleId\": 1,\n  \"officeId\": 1,\n  \"birthdate\": \"1990-01-01\",\n  \"email\": \"john.doe@example.com\",\n  \"workEmail\": \"john.doe@work.com\",\n  \"workPhone\": \"+0987654321\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/register",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "register"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"User registered successfully\",\n  \"data\": {\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"John\",\n      \"surname\": \"Doe\",\n      \"fathername\": \"Smith\",\n      \"phone\": \"+1234567890\",\n      \"email\": \"john.doe@example.com\",\n      \"workEmail\": \"john.doe@work.com\",\n      \"workPhone\": \"+0987654321\",\n      \"role\": \"ADMIN\",\n      \"roleId\": 1,\n      \"office\": {\n        \"id\": 1,\n        \"name\": \"Main Office\",\n        \"code\": \"OFF-001\"\n      },\n      \"branch\": null,\n      \"active\": true\n    }\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"John\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/register",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "register"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"code\": \"VALIDATION_ERROR\",\n  \"errors\": [\n    \"phone is required\",\n    \"password is required\"\n  ]\n}"
+            },
+            {
+              "name": "User Already Exists",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"John\",\n  \"surname\": \"Doe\",\n  \"fathername\": \"Smith\",\n  \"phone\": \"+1234567890\",\n  \"password\": \"SecurePass123\",\n  \"roleId\": 1,\n  \"officeId\": 1\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/register",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "register"]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"User with this phone already exists\",\n  \"code\": \"CONFLICT\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Login",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"+1234567890\",\n  \"password\": \"SecurePass123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phone\": \"+1234567890\",\n  \"password\": \"SecurePass123\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/login",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "login"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Login successful\",\n  \"data\": {\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"John\",\n      \"surname\": \"Doe\",\n      \"fathername\": \"Smith\",\n      \"phone\": \"+1234567890\",\n      \"email\": \"john.doe@example.com\",\n      \"workEmail\": \"john.doe@work.com\",\n      \"workPhone\": \"+0987654321\",\n      \"role\": \"ADMIN\",\n      \"roleId\": 1,\n      \"office\": {\n        \"id\": 1,\n        \"name\": \"Main Office\",\n        \"code\": \"OFF-001\"\n      },\n      \"branch\": null,\n      \"active\": true\n    },\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n  }\n}"
+            },
+            {
+              "name": "Invalid Credentials",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"phone\": \"+1234567890\",\n  \"password\": \"WrongPassword\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/login",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "login"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid credentials\",\n  \"code\": \"UNAUTHORIZED\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"refreshToken\": \"{{refresh_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/refresh",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "refresh"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/refresh",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "refresh"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Token refreshed successfully\",\n  \"data\": {\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n    \"refreshToken\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n  }\n}"
+            },
+            {
+              "name": "Invalid Token",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"refreshToken\": \"invalid_token\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/refresh",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "refresh"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid or expired token\",\n  \"code\": \"UNAUTHORIZED\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "me"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/me",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "me"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"User profile retrieved successfully\",\n  \"data\": {\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"John\",\n      \"surname\": \"Doe\",\n      \"fathername\": \"Smith\",\n      \"phone\": \"+1234567890\",\n      \"email\": \"john.doe@example.com\",\n      \"workEmail\": \"john.doe@work.com\",\n      \"workPhone\": \"+0987654321\",\n      \"role\": \"ADMIN\",\n      \"roleId\": 1,\n      \"office\": {\n        \"id\": 1,\n        \"name\": \"Main Office\",\n        \"code\": \"OFF-001\"\n      },\n      \"branch\": null,\n      \"active\": true\n    }\n  }\n}"
+            },
+            {
+              "name": "Unauthorized - No Token",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/me",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "me"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"No token provided\",\n  \"code\": \"UNAUTHORIZED\"\n}"
+            },
+            {
+              "name": "Unauthorized - Invalid Token",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer invalid_token"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/me",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "me"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Invalid token\",\n  \"code\": \"UNAUTHORIZED\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "auth", "logout"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/logout",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "logout"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Logout successful\"\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "originalRequest": {
+                "method": "POST",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/auth/logout",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "auth", "logout"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"No token provided\",\n  \"code\": \"UNAUTHORIZED\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users?officeId=1&active=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users"],
+              "query": [
+                {
+                  "key": "officeId",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "branchId",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "roleId",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "active",
+                  "value": "true",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Users retrieved successfully\",\n  \"data\": {\n    \"users\": [\n      {\n        \"id\": 1,\n        \"name\": \"John\",\n        \"surname\": \"Doe\",\n        \"phone\": \"+1234567890\",\n        \"email\": \"john.doe@example.com\",\n        \"roleId\": 1,\n        \"officeId\": 1,\n        \"active\": true\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"No token provided\",\n  \"code\": \"UNAUTHORIZED\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get User By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"data\": {\n    \"id\": 1,\n    \"createdAt\": \"2025-10-26T13:51:45.280Z\",\n    \"updatedAt\": \"2025-10-27T03:42:01.428Z\",\n    \"name\": \"John\",\n    \"surname\": \"Doe\",\n    \"fathername\": \"Smith\",\n    \"phone\": \"+1234567890\",\n    \"birthdate\": \"1990-01-01T00:00:00.000Z\",\n    \"email\": \"john.doe@example.com\",\n    \"workEmail\": \"john.doe@work.com\",\n    \"workPhone\": \"+0987654321\",\n    \"active\": true,\n    \"isVerified\": false,\n    \"lastLoginAt\": \"2025-10-27T03:42:01.427Z\",\n    \"tokenExpiry\": \"2025-11-26T03:42:01.427Z\",\n    \"passportNumber\": null,\n    \"position\": null,\n    \"department\": null,\n    \"hireDate\": null,\n    \"role\": {\n      \"id\": 1,\n      \"createdAt\": \"2025-10-26T13:03:33.221Z\",\n      \"updatedAt\": \"2025-10-26T13:03:33.221Z\",\n      \"name\": \"SUPER_ADMIN\",\n      \"description\": \"Super Administrator with unrestricted access\",\n      \"isSystem\": true,\n      \"active\": true,\n      \"permissions\": [\"users.create\", \"users.read\", \"users.update\", \"users.delete\", \"users.list\"]\n    },\n    \"office\": {\n      \"id\": 1,\n      \"createdAt\": \"2025-10-26T13:47:47.296Z\",\n      \"updatedAt\": \"2025-10-26T13:47:47.296Z\",\n      \"name\": \"Main Office - Ashgabat\",\n      \"code\": \"WSC-001\",\n      \"phone\": \"+993-12-123456\",\n      \"email\": \"main@wscts.tm\",\n      \"active\": true,\n      \"description\": \"Main headquarters office in Ashgabat\"\n    },\n    \"branch\": null\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"User not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update User",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"newemail@example.com\",\n  \"position\": \"Senior Manager\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Updated Name\",\n  \"email\": \"newemail@example.com\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"User updated successfully\",\n  \"data\": {\n    \"user\": {\n      \"id\": 1,\n      \"name\": \"Updated Name\",\n      \"surname\": \"Doe\",\n      \"email\": \"newemail@example.com\",\n      \"roleId\": 1,\n      \"officeId\": 1,\n      \"active\": true\n    }\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Updated Name\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"User not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Soft Delete User",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/2",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users", "2"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"User deleted successfully\"\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"User not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Deactivate User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/:id/deactivate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", ":id", "deactivate"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/2/deactivate",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users", "2", "deactivate"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"User deactivated successfully\"\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/999/deactivate",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users", "999", "deactivate"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"User not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Reactivate User",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/:id/reactivate",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", ":id", "reactivate"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/2/reactivate",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users", "2", "reactivate"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"User reactivated successfully\"\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/999/reactivate",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users", "999", "reactivate"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"User not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Assign Role to User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"roleId\": 2\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/users/:id/assign-role",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "users", ":id", "assign-role"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"roleId\": 2\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/1/assign-role",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users", "1", "assign-role"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Role assigned successfully\"\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"roleId\": \"invalid\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/users/1/assign-role",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "users", "1", "assign-role"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"code\": \"VALIDATION_ERROR\",\n  \"errors\": [\n    \"roleId must be a number\"\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Roles",
+      "item": [
+        {
+          "name": "Get Available Permissions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles/permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "roles", "permissions"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/roles/permissions",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "roles", "permissions"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Permissions retrieved successfully\",\n  \"data\": {\n    \"permissions\": [\n      \"users.create\",\n      \"users.read\",\n      \"users.update\",\n      \"users.delete\",\n      \"users.list\",\n      \"roles.create\",\n      \"roles.read\",\n      \"roles.update\",\n      \"roles.delete\",\n      \"roles.list\"\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Create Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"MANAGER\",\n  \"description\": \"Branch Manager with operational permissions\",\n  \"permissions\": [\n    \"users.read\",\n    \"users.list\",\n    \"roles.read\",\n    \"roles.list\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "roles"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"MANAGER\",\n  \"description\": \"Branch Manager with operational permissions\",\n  \"permissions\": [\n    \"users.read\",\n    \"users.list\"\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/roles",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "roles"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Role created successfully\",\n  \"data\": {\n    \"role\": {\n      \"id\": 2,\n      \"name\": \"MANAGER\",\n      \"description\": \"Branch Manager with operational permissions\",\n      \"permissions\": [\n        \"users.read\",\n        \"users.list\"\n      ],\n      \"active\": true,\n      \"createdAt\": \"2025-01-26T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/roles",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "roles"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"code\": \"VALIDATION_ERROR\",\n  \"errors\": [\n    \"name is required\"\n  ]\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Roles",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles?activeOnly=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "roles"],
+              "query": [
+                {
+                  "key": "activeOnly",
+                  "value": "true",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/roles",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "roles"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Roles retrieved successfully\",\n  \"data\": {\n    \"roles\": [\n      {\n        \"id\": 1,\n        \"name\": \"ADMIN\",\n        \"description\": \"Administrator with full access\",\n        \"active\": true\n      },\n      {\n        \"id\": 2,\n        \"name\": \"MANAGER\",\n        \"description\": \"Manager with limited access\",\n        \"active\": true\n      }\n    ]\n  }\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Role By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "roles", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/roles/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "roles", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Role retrieved successfully\",\n  \"data\": {\n    \"role\": {\n      \"id\": 1,\n      \"name\": \"ADMIN\",\n      \"description\": \"Administrator with full access\",\n      \"permissions\": [\n        \"users.create\",\n        \"users.read\",\n        \"users.update\",\n        \"users.delete\",\n        \"users.list\",\n        \"roles.create\",\n        \"roles.read\",\n        \"roles.update\",\n        \"roles.delete\",\n        \"roles.list\"\n      ],\n      \"active\": true,\n      \"createdAt\": \"2025-01-26T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/roles/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "roles", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Role not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Role",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"SENIOR_MANAGER\",\n  \"description\": \"Senior Manager with extended permissions\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "roles", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"SENIOR_MANAGER\",\n  \"description\": \"Senior Manager with extended permissions\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/roles/2",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "roles", "2"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Role updated successfully\",\n  \"data\": {\n    \"role\": {\n      \"id\": 2,\n      \"name\": \"SENIOR_MANAGER\",\n      \"description\": \"Senior Manager with extended permissions\",\n      \"active\": true\n    }\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"SENIOR_MANAGER\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/roles/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "roles", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Role not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Soft Delete Role",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "roles", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "3"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/roles/3",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "roles", "3"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Role deleted successfully\"\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/roles/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "roles", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Role not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Assign Permissions to Role",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"permissions\": [\n    \"users.create\",\n    \"users.read\",\n    \"users.update\",\n    \"users.list\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/roles/:id/assign-permissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "roles", ":id", "assign-permissions"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "2"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"permissions\": [\n    \"users.create\",\n    \"users.read\",\n    \"users.update\",\n    \"users.list\"\n  ]\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/roles/2/assign-permissions",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "roles", "2", "assign-permissions"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Permissions assigned successfully\"\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"permissions\": \"not_an_array\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/roles/2/assign-permissions",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "roles", "2", "assign-permissions"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"code\": \"VALIDATION_ERROR\",\n  \"errors\": [\n    \"permissions must be an array\"\n  ]\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Offices",
+      "item": [
+        {
+          "name": "Create Office",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Main Office Hebron\",\n  \"code\": \"HEB-001\",\n  \"phone\": \"+970599123456\",\n  \"email\": \"hebron.office@wscts.com\",\n  \"city\": \"Hebron\",\n  \"latitude\": 31.5326,\n  \"longitude\": 35.0998\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/offices",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "offices"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Main Office Hebron\",\n  \"code\": \"HEB-001\",\n  \"phone\": \"+970599123456\",\n  \"email\": \"hebron.office@wscts.com\",\n  \"city\": \"Hebron\",\n  \"latitude\": 31.5326,\n  \"longitude\": 35.0998\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Office created successfully\",\n  \"data\": {\n    \"office\": {\n      \"id\": 1,\n      \"name\": \"Main Office Hebron\",\n      \"code\": \"HEB-001\",\n      \"phone\": \"+970599123456\",\n      \"email\": \"hebron.office@wscts.com\",\n      \"city\": \"Hebron\",\n      \"latitude\": 31.5326,\n      \"longitude\": 35.0998,\n      \"active\": true,\n      \"createdAt\": \"2025-01-26T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"code\": \"VALIDATION_ERROR\",\n  \"errors\": [\n    \"name is required\",\n    \"code is required\"\n  ]\n}"
+            },
+            {
+              "name": "Office Already Exists",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Main Office Hebron\",\n  \"code\": \"HEB-001\",\n  \"phone\": \"+970599123456\",\n  \"email\": \"hebron.office@wscts.com\",\n  \"city\": \"Hebron\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices"]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Office with this code already exists\",\n  \"code\": \"CONFLICT\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Offices",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/offices?active=true&city=Hebron&region=South",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "offices"],
+              "query": [
+                {
+                  "key": "active",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "city",
+                  "value": "Hebron",
+                  "disabled": true
+                },
+                {
+                  "key": "region",
+                  "value": "South",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Offices retrieved successfully\",\n  \"data\": {\n    \"offices\": [\n      {\n        \"id\": 1,\n        \"name\": \"Main Office Hebron\",\n        \"code\": \"HEB-001\",\n        \"phone\": \"+970599123456\",\n        \"email\": \"hebron.office@wscts.com\",\n        \"city\": \"Hebron\",\n        \"active\": true\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"No token provided\",\n  \"code\": \"UNAUTHORIZED\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Office By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/offices/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "offices", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Office retrieved successfully\",\n  \"data\": {\n    \"office\": {\n      \"id\": 1,\n      \"name\": \"Main Office Hebron\",\n      \"code\": \"HEB-001\",\n      \"phone\": \"+970599123456\",\n      \"email\": \"hebron.office@wscts.com\",\n      \"city\": \"Hebron\",\n      \"latitude\": 31.5326,\n      \"longitude\": 35.0998,\n      \"active\": true,\n      \"createdAt\": \"2025-01-26T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Office not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Office",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Office Name\",\n  \"phone\": \"+970599999999\",\n  \"email\": \"updated.office@wscts.com\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/offices/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "offices", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Updated Office Name\",\n  \"phone\": \"+970599999999\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Office updated successfully\",\n  \"data\": {\n    \"office\": {\n      \"id\": 1,\n      \"name\": \"Updated Office Name\",\n      \"code\": \"HEB-001\",\n      \"phone\": \"+970599999999\",\n      \"email\": \"updated.office@wscts.com\",\n      \"active\": true\n    }\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Updated Office Name\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Office not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Office",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/offices/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "offices", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Office deleted successfully\"\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Office not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Office Trucks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/offices/:id/trucks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "offices", ":id", "trucks"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices/1/trucks",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices", "1", "trucks"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Office trucks retrieved successfully\",\n  \"data\": {\n    \"trucks\": [\n      {\n        \"id\": 1,\n        \"engineNumber\": \"ENG-123456\",\n        \"plateNumber\": \"AB-1234\",\n        \"capacity\": 5000,\n        \"officeId\": 1,\n        \"active\": true\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices/999/trucks",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices", "999", "trucks"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Office not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Office Branches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/offices/:id/branches",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "offices", ":id", "branches"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices/1/branches",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices", "1", "branches"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Office branches retrieved successfully\",\n  \"data\": {\n    \"branches\": [\n      {\n        \"id\": 1,\n        \"name\": \"North Branch\",\n        \"code\": \"HEB-NB-001\",\n        \"officeId\": 1,\n        \"city\": \"Hebron\",\n        \"active\": true\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices/999/branches",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices", "999", "branches"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Office not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Office Deliveries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/offices/:id/deliveries",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "offices", ":id", "deliveries"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices/1/deliveries",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices", "1", "deliveries"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Office deliveries retrieved successfully\",\n  \"data\": {\n    \"deliveries\": [\n      {\n        \"id\": 1,\n        \"deliveryNumber\": \"DEL-001\",\n        \"status\": \"SCHEDULED\",\n        \"priority\": \"NORMAL\",\n        \"quantity\": 5000,\n        \"scheduledDate\": \"2025-01-27T10:00:00.000Z\"\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/offices/999/deliveries",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "offices", "999", "deliveries"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Office not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Branches",
+      "item": [
+        {
+          "name": "Create Branch",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"North Branch\",\n  \"code\": \"HEB-NB-001\",\n  \"officeId\": 1,\n  \"city\": \"Hebron\",\n  \"latitude\": 31.5500,\n  \"longitude\": 35.1100\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/branches",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "branches"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"North Branch\",\n  \"code\": \"HEB-NB-001\",\n  \"officeId\": 1,\n  \"city\": \"Hebron\",\n  \"latitude\": 31.5500,\n  \"longitude\": 35.1100\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Branch created successfully\",\n  \"data\": {\n    \"branch\": {\n      \"id\": 1,\n      \"name\": \"North Branch\",\n      \"code\": \"HEB-NB-001\",\n      \"officeId\": 1,\n      \"city\": \"Hebron\",\n      \"latitude\": 31.5500,\n      \"longitude\": 35.1100,\n      \"active\": true,\n      \"createdAt\": \"2025-01-26T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"code\": \"VALIDATION_ERROR\",\n  \"errors\": [\n    \"name is required\",\n    \"code is required\",\n    \"officeId is required\"\n  ]\n}"
+            },
+            {
+              "name": "Branch Already Exists",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"North Branch\",\n  \"code\": \"HEB-NB-001\",\n  \"officeId\": 1,\n  \"city\": \"Hebron\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches"]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Branch with this code already exists\",\n  \"code\": \"CONFLICT\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Branches",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/branches?active=true&officeId=1&city=Hebron&region=South",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "branches"],
+              "query": [
+                {
+                  "key": "active",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "officeId",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "city",
+                  "value": "Hebron",
+                  "disabled": true
+                },
+                {
+                  "key": "region",
+                  "value": "South",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Branches retrieved successfully\",\n  \"data\": {\n    \"branches\": [\n      {\n        \"id\": 1,\n        \"name\": \"North Branch\",\n        \"code\": \"HEB-NB-001\",\n        \"officeId\": 1,\n        \"city\": \"Hebron\",\n        \"active\": true\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"No token provided\",\n  \"code\": \"UNAUTHORIZED\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Branch By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/branches/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "branches", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Branch retrieved successfully\",\n  \"data\": {\n    \"branch\": {\n      \"id\": 1,\n      \"name\": \"North Branch\",\n      \"code\": \"HEB-NB-001\",\n      \"officeId\": 1,\n      \"city\": \"Hebron\",\n      \"latitude\": 31.5500,\n      \"longitude\": 35.1100,\n      \"active\": true,\n      \"createdAt\": \"2025-01-26T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Branch not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Branch",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Branch Name\",\n  \"city\": \"Hebron North\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/branches/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "branches", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Updated Branch Name\",\n  \"city\": \"Hebron North\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Branch updated successfully\",\n  \"data\": {\n    \"branch\": {\n      \"id\": 1,\n      \"name\": \"Updated Branch Name\",\n      \"code\": \"HEB-NB-001\",\n      \"officeId\": 1,\n      \"city\": \"Hebron North\",\n      \"active\": true\n    }\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"Updated Branch Name\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Branch not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Branch",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/branches/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "branches", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Branch deleted successfully\"\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Branch not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Branch Trucks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/branches/:id/trucks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "branches", ":id", "trucks"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches/1/trucks",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches", "1", "trucks"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Branch trucks retrieved successfully\",\n  \"data\": {\n    \"trucks\": [\n      {\n        \"id\": 1,\n        \"engineNumber\": \"ENG-123456\",\n        \"plateNumber\": \"AB-1234\",\n        \"capacity\": 5000,\n        \"branchId\": 1,\n        \"active\": true\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches/999/trucks",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches", "999", "trucks"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Branch not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Branch Deliveries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/branches/:id/deliveries",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "branches", ":id", "deliveries"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches/1/deliveries",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches", "1", "deliveries"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Branch deliveries retrieved successfully\",\n  \"data\": {\n    \"deliveries\": [\n      {\n        \"id\": 1,\n        \"deliveryNumber\": \"DEL-001\",\n        \"status\": \"SCHEDULED\",\n        \"priority\": \"NORMAL\",\n        \"quantity\": 5000,\n        \"scheduledDate\": \"2025-01-27T10:00:00.000Z\"\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/branches/999/deliveries",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "branches", "999", "deliveries"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Branch not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Trucks",
+      "item": [
+        {
+          "name": "Create Truck",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"engineNumber\": \"ENG-123456\",\n  \"plateNumber\": \"AB-1234\",\n  \"registrationNumber\": \"REG-789012\",\n  \"capacity\": 5000,\n  \"latitude\": 31.5326,\n  \"longitude\": 35.0998,\n  \"officeId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trucks",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "trucks"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"engineNumber\": \"ENG-123456\",\n  \"plateNumber\": \"AB-1234\",\n  \"registrationNumber\": \"REG-789012\",\n  \"capacity\": 5000,\n  \"latitude\": 31.5326,\n  \"longitude\": 35.0998,\n  \"officeId\": 1\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Truck created successfully\",\n  \"data\": {\n    \"truck\": {\n      \"id\": 1,\n      \"engineNumber\": \"ENG-123456\",\n      \"plateNumber\": \"AB-1234\",\n      \"registrationNumber\": \"REG-789012\",\n      \"capacity\": 5000,\n      \"latitude\": 31.5326,\n      \"longitude\": 35.0998,\n      \"officeId\": 1,\n      \"active\": true,\n      \"createdAt\": \"2025-01-26T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"engineNumber\": \"\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"code\": \"VALIDATION_ERROR\",\n  \"errors\": [\n    \"engineNumber is required\",\n    \"plateNumber is required\",\n    \"capacity is required\"\n  ]\n}"
+            },
+            {
+              "name": "Truck Already Exists",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"engineNumber\": \"ENG-123456\",\n  \"plateNumber\": \"AB-1234\",\n  \"capacity\": 5000,\n  \"officeId\": 1\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks"]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Truck with this engine number already exists\",\n  \"code\": \"CONFLICT\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Trucks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trucks?officeId=1&branchId=1&status=AVAILABLE&active=true",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "trucks"],
+              "query": [
+                {
+                  "key": "officeId",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "branchId",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "status",
+                  "value": "AVAILABLE",
+                  "disabled": true
+                },
+                {
+                  "key": "active",
+                  "value": "true",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Trucks retrieved successfully\",\n  \"data\": {\n    \"trucks\": [\n      {\n        \"id\": 1,\n        \"engineNumber\": \"ENG-123456\",\n        \"plateNumber\": \"AB-1234\",\n        \"capacity\": 5000,\n        \"status\": \"AVAILABLE\",\n        \"officeId\": 1,\n        \"active\": true\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"No token provided\",\n  \"code\": \"UNAUTHORIZED\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Truck By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trucks/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "trucks", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Truck retrieved successfully\",\n  \"data\": {\n    \"truck\": {\n      \"id\": 1,\n      \"engineNumber\": \"ENG-123456\",\n      \"plateNumber\": \"AB-1234\",\n      \"registrationNumber\": \"REG-789012\",\n      \"capacity\": 5000,\n      \"latitude\": 31.5326,\n      \"longitude\": 35.0998,\n      \"officeId\": 1,\n      \"status\": \"AVAILABLE\",\n      \"active\": true,\n      \"createdAt\": \"2025-01-26T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Truck not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Truck",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"capacity\": 6000,\n  \"status\": \"IN_MAINTENANCE\",\n  \"latitude\": 31.5400,\n  \"longitude\": 35.1000,\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trucks/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "trucks", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"capacity\": 6000,\n  \"status\": \"IN_MAINTENANCE\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Truck updated successfully\",\n  \"data\": {\n    \"truck\": {\n      \"id\": 1,\n      \"engineNumber\": \"ENG-123456\",\n      \"plateNumber\": \"AB-1234\",\n      \"capacity\": 6000,\n      \"status\": \"IN_MAINTENANCE\",\n      \"active\": true\n    }\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"capacity\": 6000\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Truck not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Truck",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trucks/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "trucks", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Truck deleted successfully\"\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Truck not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Truck Maintenance",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lastMaintenanceDate\": \"2025-01-20T10:00:00.000Z\",\n  \"maintenanceType\": \"Oil Change\",\n  \"maintenanceDescription\": \"Regular oil change and filter replacement\",\n  \"nextMaintenanceDate\": \"2025-04-20T10:00:00.000Z\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trucks/:id/maintenance",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "trucks", ":id", "maintenance"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"lastMaintenanceDate\": \"2025-01-20T10:00:00.000Z\",\n  \"maintenanceType\": \"Oil Change\",\n  \"maintenanceDescription\": \"Regular oil change and filter replacement\",\n  \"nextMaintenanceDate\": \"2025-04-20T10:00:00.000Z\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks/1/maintenance",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks", "1", "maintenance"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Truck maintenance updated successfully\",\n  \"data\": {\n    \"truck\": {\n      \"id\": 1,\n      \"engineNumber\": \"ENG-123456\",\n      \"plateNumber\": \"AB-1234\",\n      \"lastMaintenanceDate\": \"2025-01-20T10:00:00.000Z\",\n      \"maintenanceType\": \"Oil Change\",\n      \"nextMaintenanceDate\": \"2025-04-20T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"lastMaintenanceDate\": \"invalid_date\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks/1/maintenance",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks", "1", "maintenance"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"code\": \"VALIDATION_ERROR\",\n  \"errors\": [\n    \"lastMaintenanceDate must be a valid date\"\n  ]\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"lastMaintenanceDate\": \"2025-01-20T10:00:00.000Z\",\n  \"maintenanceType\": \"Oil Change\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks/999/maintenance",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks", "999", "maintenance"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Truck not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Truck Deliveries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/trucks/:id/deliveries",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "trucks", ":id", "deliveries"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks/1/deliveries",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks", "1", "deliveries"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Truck deliveries retrieved successfully\",\n  \"data\": {\n    \"deliveries\": [\n      {\n        \"id\": 1,\n        \"deliveryNumber\": \"DEL-001\",\n        \"status\": \"SCHEDULED\",\n        \"priority\": \"NORMAL\",\n        \"quantity\": 5000,\n        \"truckId\": 1,\n        \"scheduledDate\": \"2025-01-27T10:00:00.000Z\"\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/trucks/999/deliveries",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "trucks", "999", "deliveries"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Truck not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Delivery Places",
+      "item": [
+        {
+          "name": "Create Delivery Place",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"placeName\": \"Al-Khalil Market\",\n  \"receiverName\": \"Ahmad Hassan\",\n  \"receiverPhone\": \"+970599111222\",\n  \"city\": \"Hebron\",\n  \"latitude\": 31.5326,\n  \"longitude\": 35.0998\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/delivery-places",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "delivery-places"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"placeName\": \"Al-Khalil Market\",\n  \"receiverName\": \"Ahmad Hassan\",\n  \"receiverPhone\": \"+970599111222\",\n  \"city\": \"Hebron\",\n  \"latitude\": 31.5326,\n  \"longitude\": 35.0998\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/delivery-places",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "delivery-places"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Delivery place created successfully\",\n  \"data\": {\n    \"deliveryPlace\": {\n      \"id\": 1,\n      \"placeName\": \"Al-Khalil Market\",\n      \"receiverName\": \"Ahmad Hassan\",\n      \"receiverPhone\": \"+970599111222\",\n      \"city\": \"Hebron\",\n      \"latitude\": 31.5326,\n      \"longitude\": 35.0998,\n      \"active\": true,\n      \"createdAt\": \"2025-01-26T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"placeName\": \"\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/delivery-places",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "delivery-places"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"code\": \"VALIDATION_ERROR\",\n  \"errors\": [\n    \"placeName is required\",\n    \"receiverName is required\",\n    \"receiverPhone is required\"\n  ]\n}"
+            },
+            {
+              "name": "Delivery Place Already Exists",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"placeName\": \"Al-Khalil Market\",\n  \"receiverName\": \"Ahmad Hassan\",\n  \"receiverPhone\": \"+970599111222\",\n  \"city\": \"Hebron\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/delivery-places",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "delivery-places"]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Delivery place already exists\",\n  \"code\": \"CONFLICT\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Delivery Places",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/delivery-places?active=true&city=Hebron&region=South&search=Market",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "delivery-places"],
+              "query": [
+                {
+                  "key": "active",
+                  "value": "true",
+                  "disabled": true
+                },
+                {
+                  "key": "city",
+                  "value": "Hebron",
+                  "disabled": true
+                },
+                {
+                  "key": "region",
+                  "value": "South",
+                  "disabled": true
+                },
+                {
+                  "key": "search",
+                  "value": "Market",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/delivery-places",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "delivery-places"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Delivery places retrieved successfully\",\n  \"data\": {\n    \"deliveryPlaces\": [\n      {\n        \"id\": 1,\n        \"placeName\": \"Al-Khalil Market\",\n        \"receiverName\": \"Ahmad Hassan\",\n        \"receiverPhone\": \"+970599111222\",\n        \"city\": \"Hebron\",\n        \"active\": true\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/delivery-places",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "delivery-places"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"No token provided\",\n  \"code\": \"UNAUTHORIZED\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Delivery Place By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/delivery-places/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "delivery-places", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/delivery-places/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "delivery-places", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Delivery place retrieved successfully\",\n  \"data\": {\n    \"deliveryPlace\": {\n      \"id\": 1,\n      \"placeName\": \"Al-Khalil Market\",\n      \"receiverName\": \"Ahmad Hassan\",\n      \"receiverPhone\": \"+970599111222\",\n      \"city\": \"Hebron\",\n      \"latitude\": 31.5326,\n      \"longitude\": 35.0998,\n      \"active\": true,\n      \"createdAt\": \"2025-01-26T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/delivery-places/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "delivery-places", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Delivery place not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Delivery Place",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"placeName\": \"Updated Market Name\",\n  \"receiverName\": \"Ahmad Hassan Updated\",\n  \"receiverPhone\": \"+970599333444\",\n  \"active\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/delivery-places/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "delivery-places", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"placeName\": \"Updated Market Name\",\n  \"receiverPhone\": \"+970599333444\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/delivery-places/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "delivery-places", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Delivery place updated successfully\",\n  \"data\": {\n    \"deliveryPlace\": {\n      \"id\": 1,\n      \"placeName\": \"Updated Market Name\",\n      \"receiverName\": \"Ahmad Hassan Updated\",\n      \"receiverPhone\": \"+970599333444\",\n      \"city\": \"Hebron\",\n      \"active\": true\n    }\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"placeName\": \"Updated Market Name\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/delivery-places/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "delivery-places", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Delivery place not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Delivery Place",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/delivery-places/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "delivery-places", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/delivery-places/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "delivery-places", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Delivery place deleted successfully\"\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/delivery-places/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "delivery-places", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Delivery place not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Deliveries",
+      "item": [
+        {
+          "name": "Create Delivery",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"deliveryNumber\": \"DEL-001\",\n  \"scheduledDate\": \"2025-01-27T10:00:00.000Z\",\n  \"quantity\": 5000,\n  \"priority\": \"NORMAL\",\n  \"deliveryPlaceId\": 1,\n  \"truckId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/deliveries",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "deliveries"]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"deliveryNumber\": \"DEL-001\",\n  \"scheduledDate\": \"2025-01-27T10:00:00.000Z\",\n  \"quantity\": 5000,\n  \"priority\": \"NORMAL\",\n  \"deliveryPlaceId\": 1,\n  \"truckId\": 1\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/deliveries",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "deliveries"]
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Delivery created successfully\",\n  \"data\": {\n    \"delivery\": {\n      \"id\": 1,\n      \"deliveryNumber\": \"DEL-001\",\n      \"scheduledDate\": \"2025-01-27T10:00:00.000Z\",\n      \"quantity\": 5000,\n      \"priority\": \"NORMAL\",\n      \"status\": \"SCHEDULED\",\n      \"deliveryPlaceId\": 1,\n      \"truckId\": 1,\n      \"createdAt\": \"2025-01-26T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Validation Error",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"deliveryNumber\": \"\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/deliveries",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "deliveries"]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Validation failed\",\n  \"code\": \"VALIDATION_ERROR\",\n  \"errors\": [\n    \"deliveryNumber is required\",\n    \"scheduledDate is required\",\n    \"quantity is required\",\n    \"deliveryPlaceId is required\",\n    \"truckId is required\"\n  ]\n}"
+            },
+            {
+              "name": "Delivery Already Exists",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"deliveryNumber\": \"DEL-001\",\n  \"scheduledDate\": \"2025-01-27T10:00:00.000Z\",\n  \"quantity\": 5000,\n  \"priority\": \"NORMAL\",\n  \"deliveryPlaceId\": 1,\n  \"truckId\": 1\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/deliveries",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "deliveries"]
+                }
+              },
+              "status": "Conflict",
+              "code": 409,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Delivery with this number already exists\",\n  \"code\": \"CONFLICT\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get All Deliveries",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/deliveries?status=SCHEDULED&priority=NORMAL&deliveryPlaceId=1&truckId=1&scheduledDateFrom=2025-01-01&scheduledDateTo=2025-12-31",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "deliveries"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "SCHEDULED",
+                  "disabled": true
+                },
+                {
+                  "key": "priority",
+                  "value": "NORMAL",
+                  "disabled": true
+                },
+                {
+                  "key": "deliveryPlaceId",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "truckId",
+                  "value": "1",
+                  "disabled": true
+                },
+                {
+                  "key": "scheduledDateFrom",
+                  "value": "2025-01-01",
+                  "disabled": true
+                },
+                {
+                  "key": "scheduledDateTo",
+                  "value": "2025-12-31",
+                  "disabled": true
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/deliveries",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "deliveries"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Deliveries retrieved successfully\",\n  \"data\": {\n    \"deliveries\": [\n      {\n        \"id\": 1,\n        \"deliveryNumber\": \"DEL-001\",\n        \"status\": \"SCHEDULED\",\n        \"priority\": \"NORMAL\",\n        \"quantity\": 5000,\n        \"scheduledDate\": \"2025-01-27T10:00:00.000Z\",\n        \"deliveryPlaceId\": 1,\n        \"truckId\": 1\n      }\n    ]\n  }\n}"
+            },
+            {
+              "name": "Unauthorized",
+              "originalRequest": {
+                "method": "GET",
+                "header": [],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/deliveries",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "deliveries"]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"No token provided\",\n  \"code\": \"UNAUTHORIZED\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Get Delivery By ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/deliveries/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "deliveries", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/deliveries/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "deliveries", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Delivery retrieved successfully\",\n  \"data\": {\n    \"delivery\": {\n      \"id\": 1,\n      \"deliveryNumber\": \"DEL-001\",\n      \"scheduledDate\": \"2025-01-27T10:00:00.000Z\",\n      \"quantity\": 5000,\n      \"priority\": \"NORMAL\",\n      \"status\": \"SCHEDULED\",\n      \"deliveryPlaceId\": 1,\n      \"truckId\": 1,\n      \"createdAt\": \"2025-01-26T10:00:00.000Z\"\n    }\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/deliveries/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "deliveries", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Delivery not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Update Delivery",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"DELIVERED\",\n  \"actualDate\": \"2025-01-27T15:30:00.000Z\",\n  \"completedAt\": \"2025-01-27T15:30:00.000Z\",\n  \"priority\": \"URGENT\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/deliveries/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "deliveries", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"DELIVERED\",\n  \"actualDate\": \"2025-01-27T15:30:00.000Z\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/deliveries/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "deliveries", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Delivery updated successfully\",\n  \"data\": {\n    \"delivery\": {\n      \"id\": 1,\n      \"deliveryNumber\": \"DEL-001\",\n      \"status\": \"DELIVERED\",\n      \"actualDate\": \"2025-01-27T15:30:00.000Z\",\n      \"completedAt\": \"2025-01-27T15:30:00.000Z\",\n      \"quantity\": 5000\n    }\n  }\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "PUT",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"status\": \"DELIVERED\"\n}"
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/deliveries/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "deliveries", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Delivery not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        },
+        {
+          "name": "Delete Delivery",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/v1/deliveries/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "v1", "deliveries", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "1"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "name": "Success",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/deliveries/1",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "deliveries", "1"]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"message\": \"Delivery deleted successfully\"\n}"
+            },
+            {
+              "name": "Not Found",
+              "originalRequest": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Authorization",
+                    "value": "Bearer {{access_token}}"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/api/v1/deliveries/999",
+                  "host": ["{{baseUrl}}"],
+                  "path": ["api", "v1", "deliveries", "999"]
+                }
+              },
+              "status": "Not Found",
+              "code": 404,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"message\": \"Delivery not found\",\n  \"code\": \"NOT_FOUND\"\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string"
+    },
+    {
+      "key": "access_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "refresh_token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,308 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Address {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  street     String? @db.VarChar(500)
+  city       String  @db.VarChar(255)
+  district   String? @db.VarChar(255)
+  region     String? @db.VarChar(255)
+  postalCode String? @map("postal_code") @db.VarChar(20)
+  country    String? @default("Turkmenistan") @db.VarChar(100)
+  latitude   Decimal @db.Decimal(10, 8)
+  longitude  Decimal @db.Decimal(11, 8)
+  notes      String? @db.Text
+
+  offices        Office[]
+  branches       Branch[]
+  deliveryPlaces DeliveryPlace[]
+
+  @@index([city])
+  @@index([latitude, longitude])
+  @@map("addresses")
+}
+
+model User {
+  id             Int       @id @default(autoincrement())
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  name           String    @db.VarChar(255)
+  surname        String    @db.VarChar(255)
+  fathername     String    @db.VarChar(255)
+  phone          String    @unique @db.VarChar(25)
+  password       String    @db.VarChar(255)
+  birthdate      DateTime?
+  email          String?   @unique @db.VarChar(255)
+  workEmail      String?   @unique @map("work_email") @db.VarChar(255)
+  workPhone      String?   @map("work_phone") @db.VarChar(25)
+  active         Boolean   @default(true)
+  isVerified     Boolean   @default(false) @map("is_verified")
+  lastLoginAt    DateTime? @map("last_login_at")
+  refreshToken   String?   @map("refresh_token") @db.Text
+  tokenExpiry    DateTime? @map("token_expiry")
+  passportNumber String?   @unique @map("passport_number") @db.VarChar(25)
+
+  deletedAt DateTime? @map("deleted_at")
+  deletedBy Int?      @map("deleted_by")
+
+  roleId     Int       @map("role_id")
+  role       Role      @relation(fields: [roleId], references: [id])
+  position   String?   @db.VarChar(255)
+  department String?   @db.VarChar(255)
+  hireDate   DateTime? @map("hire_date")
+
+  officeId     Int?          @map("office_id")
+  branchId     Int?          @map("branch_id")
+  office       Office?       @relation(fields: [officeId], references: [id])
+  branch       Branch?       @relation(fields: [branchId], references: [id])
+  createdBy    User?         @relation("UserCreator", fields: [createdById], references: [id])
+  createdById  Int?          @map("created_by_id")
+  createdUsers User[]        @relation("UserCreator")
+  activityLogs ActivityLog[]
+
+  @@index([roleId])
+  @@index([officeId])
+  @@index([branchId])
+  @@index([active])
+  @@index([deletedAt])
+  @@map("users")
+}
+
+model Role {
+  id          Int      @id @default(autoincrement())
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  name        String   @unique @db.VarChar(100)
+  description String?  @db.Text
+  isSystem    Boolean  @default(false) @map("is_system")
+  active      Boolean  @default(true)
+
+  permissions String[] @default([])
+
+  // Soft delete
+  deletedAt DateTime? @map("deleted_at")
+  deletedBy Int?      @map("deleted_by")
+
+  users User[]
+
+  @@index([active])
+  @@index([deletedAt])
+  @@map("roles")
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+
+  userId     Int     @map("user_id")
+  action     String  @db.VarChar(100) // e.g., "LOGIN", "CREATE_USER", "UPDATE_CUSTOMER"
+  module     String  @db.VarChar(100) // e.g., "auth", "billing"
+  resource   String  @db.VarChar(100) // e.g., "user", "invoice"
+  resourceId Int?    @map("resource_id") // ID of the affected resource
+  details    Json? // Additional context about the action
+  ipAddress  String? @map("ip_address") @db.VarChar(45)
+  userAgent  String? @map("user_agent") @db.Text
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+  @@index([module])
+  @@index([action])
+  @@map("activity_logs")
+}
+
+model Office {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name        String  @unique @db.VarChar(255)
+  code        String  @unique @db.VarChar(50) // e.g., "WSC-001"
+  phone       String  @db.VarChar(50)
+  email       String? @db.VarChar(255)
+  active      Boolean @default(true)
+  description String? @db.Text
+
+  addressId Int      @unique @map("address_id")
+  address   Address  @relation(fields: [addressId], references: [id])
+  branches  Branch[]
+  staff     User[]
+  trucks    Truck[]
+
+  @@index([active])
+  @@map("offices")
+}
+
+model Branch {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  name        String  @db.VarChar(255)
+  code        String  @unique @db.VarChar(50)
+  phone       String? @db.VarChar(50)
+  email       String? @db.VarChar(255)
+  active      Boolean @default(true)
+  description String? @db.Text
+
+  officeId  Int     @map("office_id")
+  office    Office  @relation(fields: [officeId], references: [id])
+  addressId Int     @unique @map("address_id")
+  address   Address @relation(fields: [addressId], references: [id])
+  staff     User[]
+  trucks    Truck[]
+
+  @@index([officeId])
+  @@index([active])
+  @@map("branches")
+}
+
+model Truck {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  engineNumber       String    @unique @map("engine_number") @db.VarChar(50)
+  model              String?   @db.VarChar(100)
+  make               String?   @db.VarChar(100) // e.g., "Mercedes", "Isuzu"
+  plateNumber        String    @unique @map("plate_number") @db.VarChar(50)
+  registrationNumber String    @unique @map("registration_number") @db.VarChar(50) // техпаспорта
+  year               Int?
+  color              String?   @db.VarChar(50)
+  capacity           Decimal   @db.Decimal(10, 2) // e.g m3
+  capacityUnit       String    @default("m3") @map("capacity_unit") @db.VarChar(20) // e.g m3
+  registrationDate   DateTime? @map("registration_date") // техпаспорта from
+  registrationExpiry DateTime? @map("registration_expiry") // техпаспорта to
+  insuranceExpiry    DateTime? @map("insurance_expiry")
+
+  // Maintenance tracking (last maintenance info)
+  lastMaintenanceDate        DateTime?        @map("last_maintenance_date")
+  maintenanceType            MaintenanceType? @map("maintenance_type")
+  maintenanceDescription     String?          @map("maintenance_description") @db.Text
+  maintenanceServiceProvider String?          @map("maintenance_service_provider") @db.VarChar(255)
+  maintenanceCompletedDate   DateTime?        @map("maintenance_completed_date")
+  nextMaintenanceDate        DateTime?        @map("next_maintenance_date")
+
+  status TruckStatus @default(AVAILABLE)
+  active Boolean     @default(true)
+  notes  String?     @db.Text
+
+  officeId   Int?       @map("office_id")
+  branchId   Int?       @map("branch_id")
+  office     Office?    @relation(fields: [officeId], references: [id])
+  branch     Branch?    @relation(fields: [branchId], references: [id])
+  deliveries Delivery[]
+
+  @@index([officeId])
+  @@index([branchId])
+  @@index([status])
+  @@index([active])
+  @@map("trucks")
+}
+
+enum TruckStatus {
+  AVAILABLE
+  IN_USE
+  UNDER_MAINTENANCE
+  OUT_OF_SERVICE
+}
+
+model DeliveryPlace {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  placeName     String  @map("place_name") @db.VarChar(255)
+  receiverName  String  @map("receiver_name") @db.VarChar(255)
+  receiverPhone String? @map("receiver_phone") @db.VarChar(25)
+  addressId     Int     @map("address_id")
+  address       Address @relation(fields: [addressId], references: [id])
+  active        Boolean @default(true)
+  notes         String? @db.Text
+
+  deliveries Delivery[]
+
+  @@index([active])
+  @@map("delivery_places")
+}
+
+model Delivery {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  deliveryNumber String    @unique @map("delivery_number") @db.VarChar(50)
+  scheduledDate  DateTime? @map("scheduled_date")
+  scheduledTime  String?   @map("scheduled_time") @db.VarChar(10)
+  actualDate     DateTime? @map("actual_date")
+  completedAt    DateTime? @map("completed_at")
+
+  // Water quantity
+  quantity     Decimal? @db.Decimal(10, 2)
+  quantityUnit String?  @default("m3") @map("quantity_unit") @db.VarChar(20)
+
+  // Pricing
+  pricePerUnit Decimal? @map("price_per_unit") @db.Decimal(12, 2)
+  totalAmount  Decimal? @map("total_amount") @db.Decimal(12, 2)
+  transportFee Decimal? @map("transport_fee") @db.Decimal(12, 2)
+
+  // Status
+  status   DeliveryStatus @default(SCHEDULED)
+  priority Priority       @default(NORMAL)
+
+  // Trip info
+  distanceTraveled Decimal? @map("distance_traveled") @db.Decimal(10, 2)
+  driverName       String?  @map("driver_name") @db.VarChar(255)
+
+  notes              String? @db.Text
+  cancellationReason String? @map("cancellation_reason") @db.Text
+
+  // Relations
+  deliveryPlaceId Int           @map("delivery_place_id")
+  deliveryPlace   DeliveryPlace @relation(fields: [deliveryPlaceId], references: [id])
+
+  truckId Int   @map("truck_id")
+  truck   Truck @relation(fields: [truckId], references: [id])
+
+  @@index([deliveryPlaceId])
+  @@index([truckId])
+  @@index([status])
+  @@index([scheduledDate])
+  @@map("deliveries")
+}
+
+enum DeliveryStatus {
+  SCHEDULED
+  IN_TRANSIT
+  DELIVERED
+  CANCELLED
+  FAILED
+}
+
+enum Priority {
+  LOW
+  NORMAL
+  URGENT
+}
+
+enum MaintenanceType {
+  ROUTINE_SERVICE
+  OIL_CHANGE
+  TIRE_REPLACEMENT
+  BRAKE_SERVICE
+  ENGINE_REPAIR
+  TANK_CLEANING
+  INSPECTION
+  EMERGENCY_REPAIR
+  OTHER
+}

@@ -1,1 +1,1 @@
-# Water Supply Committee Tracking System - Backend
+# Water Supply Committee Tracking System (WSCTS) - Backend
