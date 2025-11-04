@@ -82,100 +82,100 @@ jobs:
           retention-days: 1
 
   deploy:
-  runs-on: ubuntu-latest
-  name: Deploy to VPS
-  needs: build
-  if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    name: Deploy to VPS
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
 
-  environment:
-    name: development
-    url: http://95.182.123.213
+    environment:
+      name: development
+      url: http://95.182.123.213
 
-  steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Download build artifacts
-      uses: actions/download-artifact@v4
-      with:
-        name: build-dist
-        path: dist/
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-dist
+          path: dist/
 
-    - name: Download build info
-      uses: actions/download-artifact@v4
-      with:
-        name: build-info
+      - name: Download build info
+        uses: actions/download-artifact@v4
+        with:
+          name: build-info
 
-    - name: Setup SSH key
-      shell: bash
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
+      - name: Setup SSH key
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
 
-    - name: Create deployment package
-      run: |
-        mkdir -p deploy-package
-        cp -r dist/ deploy-package/
-        cp package.json deploy-package/
-        cp package-lock.json deploy-package/ || true
-        cp -r prisma/ deploy-package/ || true
-        cp .env.example deploy-package/ || true
-        tar -czf app-release.tar.gz deploy-package/
+      - name: Create deployment package
+        run: |
+          mkdir -p deploy-package
+          cp -r dist/ deploy-package/
+          cp package.json deploy-package/
+          cp package-lock.json deploy-package/ || true
+          cp -r prisma/ deploy-package/ || true
+          cp .env.example deploy-package/ || true
+          tar -czf app-release.tar.gz deploy-package/
 
-    - name: Upload to VPS
-      run: |
-        scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no app-release.tar.gz \
-          ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/app-release.tar.gz
+      - name: Upload to VPS
+        run: |
+          scp -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no app-release.tar.gz \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/app-release.tar.gz
 
-    - name: Deploy on VPS
-      run: |
-        ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
-          ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
-          set -e
+      - name: Deploy on VPS
+        run: |
+          ssh -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+            set -e
 
-          DEPLOY_DIR="/var/www/wscts-api/development"
+            DEPLOY_DIR="/var/www/wscts-api/development"
 
-          echo "Extracting release..."
-          cd ~
-          tar -xzf app-release.tar.gz
+            echo "Extracting release..."
+            cd ~
+            tar -xzf app-release.tar.gz
 
-          echo "Backing up current deployment (if exists)..."
-          if [ -d "$DEPLOY_DIR" ]; then
-            BACKUP_DIR="/var/www/wscts-api/backups/backup-$(date +%Y%m%d-%H%M%S)"
-            mkdir -p "$BACKUP_DIR"
-            cp -r "$DEPLOY_DIR"/* "$BACKUP_DIR/" || true
-            echo "Backup created at: $BACKUP_DIR"
-          fi
+            echo "Backing up current deployment (if exists)..."
+            if [ -d "$DEPLOY_DIR" ]; then
+              BACKUP_DIR="/var/www/wscts-api/backups/backup-$(date +%Y%m%d-%H%M%S)"
+              mkdir -p "$BACKUP_DIR"
+              cp -r "$DEPLOY_DIR"/* "$BACKUP_DIR/" || true
+              echo "Backup created at: $BACKUP_DIR"
+            fi
 
-          echo "Deploying new version..."
-          mkdir -p "$DEPLOY_DIR"
-          cp -r deploy-package/dist "$DEPLOY_DIR/"
-          cp deploy-package/package.json "$DEPLOY_DIR/"
-          [ -f deploy-package/package-lock.json ] && cp deploy-package/package-lock.json "$DEPLOY_DIR/"
-          [ -d deploy-package/prisma ] && cp -r deploy-package/prisma "$DEPLOY_DIR/"
+            echo "Deploying new version..."
+            mkdir -p "$DEPLOY_DIR"
+            cp -r deploy-package/dist "$DEPLOY_DIR/"
+            cp deploy-package/package.json "$DEPLOY_DIR/"
+            [ -f deploy-package/package-lock.json ] && cp deploy-package/package-lock.json "$DEPLOY_DIR/"
+            [ -d deploy-package/prisma ] && cp -r deploy-package/prisma "$DEPLOY_DIR/"
 
-          cd "$DEPLOY_DIR"
-          npm ci --omit=dev
+            cd "$DEPLOY_DIR"
+            npm ci --omit=dev
 
-          echo "Running database migrations..."
-          npx prisma migrate deploy
+            echo "Running database migrations..."
+            npx prisma migrate deploy
 
-          echo "Restarting app..."
-          if command -v pm2 &> /dev/null; then
-            pm2 restart wscts-api || pm2 start dist/server.js --name wscts-api --env development
-          elif command -v systemctl &> /dev/null; then
-            sudo systemctl restart wscts-api
-          else
-            echo "⚠️ No process manager found. Manual start required."
-          fi
+            echo "Restarting app..."
+            if command -v pm2 &> /dev/null; then
+              pm2 restart wscts-api || pm2 start dist/server.js --name wscts-api --env development
+            elif command -v systemctl &> /dev/null; then
+              sudo systemctl restart wscts-api
+            else
+              echo "⚠️ No process manager found. Manual start required."
+            fi
 
-          echo "Cleaning up..."
-          rm -rf ~/deploy-package ~/app-release.tar.gz
+            echo "Cleaning up..."
+            rm -rf ~/deploy-package ~/app-release.tar.gz
 
-          echo "✅ Deployment completed successfully!"
-        EOF
+            echo "✅ Deployment completed successfully!"
+          EOF
 
       - name: Verify deployment
         run: |
