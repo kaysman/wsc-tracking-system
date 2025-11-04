@@ -89,7 +89,7 @@ jobs:
 
     environment:
       name: development
-      url: http://95.182.123.213/
+      url: http://95.182.123.213
 
     steps:
       - name: Checkout code
@@ -107,21 +107,13 @@ jobs:
           name: build-info
 
       - name: Setup SSH key
+        shell: bash
         run: |
           mkdir -p ~/.ssh
-          cat > ~/.ssh/vps_key << 'SSHKEY'
-          ${{ secrets.VPS_SSH_KEY }}
-          SSHKEY
-          chmod 600 ~/.ssh/vps_key
-          cat > ~/.ssh/config << 'SSHCONFIG'
-          Host ${{ secrets.VPS_HOST }}
-            HostName ${{ secrets.VPS_HOST }}
-            User ${{ secrets.VPS_USER }}
-            IdentityFile ~/.ssh/vps_key
-            StrictHostKeyChecking no
-          SSHCONFIG
-          chmod 600 ~/.ssh/config
-          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} > ~/.ssh/known_hosts
 
       - name: Create deployment package
         run: |
