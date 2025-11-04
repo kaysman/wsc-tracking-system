@@ -1,13 +1,13 @@
-import logger from "../../shared/logger";
-import { NotFoundError, ConflictError, AppError } from "../../shared/AppError";
+import logger from "../../shared/logger.js";
+import { NotFoundError, ConflictError, AppError } from "../../shared/AppError.js";
 import {
   CreateTruckRequest,
   UpdateTruckRequest,
   UpdateMaintenanceRequest,
   TruckFilters,
   TruckResponse,
-} from "./trucks.types";
-import prisma from "../../shared/prisma";
+} from "./trucks.types.js";
+import prisma from "../../shared/prisma.js";
 import { Prisma } from "@prisma/client";
 
 const mapTruckToResponse = (truck: any): TruckResponse => ({

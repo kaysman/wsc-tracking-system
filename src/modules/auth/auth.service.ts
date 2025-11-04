@@ -1,20 +1,20 @@
-import logger from "../../shared/logger";
+import logger from "../../shared/logger.js";
 import {
   NotFoundError,
   ConflictError,
   AppError,
   UnauthorizedError,
-} from "../../shared/AppError";
-import { LoginRequest, RegisterRequest } from "./auth.types";
-import { hashPassword, comparePassword } from "../../shared/utils/crypto";
+} from "../../shared/AppError.js";
+import { LoginRequest, RegisterRequest } from "./auth.types.js";
+import { hashPassword, comparePassword } from "../../shared/utils/crypto.js";
 import {
   generateTokenPair,
   verifyRefreshToken,
   getRefreshTokenExpiry,
-} from "../../shared/utils/jwt.util";
-import prisma from "../../shared/prisma";
-import { JWTPayload } from "../../shared/types/common";
-import { UserResponse, mapUserToResponse } from "../users/users.service";
+} from "../../shared/utils/jwt.util.js";
+import prisma from "../../shared/prisma.js";
+import { JWTPayload } from "../../shared/types/common.js";
+import { UserResponse, mapUserToResponse } from "../users/users.service.js";
 
 const createJWTPayload = (user: any): JWTPayload => ({
   userId: user.id,

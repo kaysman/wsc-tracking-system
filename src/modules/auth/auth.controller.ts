@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from "express";
-import logger from "../../shared/logger";
-import { AppError } from "../../shared/AppError";
-import { UnauthorizedError, NotFoundError } from "../../shared/AppError";
-import { env } from "../../shared/env.config";
+import logger from "../../shared/logger.js";
+import { AppError } from "../../shared/AppError.js";
+import { UnauthorizedError, NotFoundError } from "../../shared/AppError.js";
+import { env } from "../../shared/env.config.js";
 import {
   LoginRequest,
   RegisterRequest,
   RefreshTokenRequest,
-} from "./auth.types";
-import * as authService from "./auth.service";
+} from "./auth.types.js";
+import * as authService from "./auth.service.js";
 
 export const register = async (
   req: Request,

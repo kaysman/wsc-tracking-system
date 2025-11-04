@@ -1,10 +1,10 @@
 import { Router } from "express";
-import * as branchesController from "./branches.controller";
+import * as branchesController from "./branches.controller.js";
 import {
   validateCreateBranch,
   validateUpdateBranch,
-} from "./branches.validators";
-import { authenticate } from "../../middlewares/auth.middleware";
+} from "./branches.validators.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import * as deliveryPlacesService from "./deliveryPlaces.service";
-import logger from "../../shared/logger";
+import * as deliveryPlacesService from "./deliveryPlaces.service.js";
+import logger from "../../shared/logger.js";
 
 export const createDeliveryPlace = async (
   req: Request,

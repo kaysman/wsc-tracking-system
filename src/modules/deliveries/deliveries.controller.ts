@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import * as deliveriesService from "./deliveries.service";
-import logger from "../../shared/logger";
+import * as deliveriesService from "./deliveries.service.js";
+import logger from "../../shared/logger.js";
 
 export const createDelivery = async (
   req: Request,

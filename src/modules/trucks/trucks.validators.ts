@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ValidationError } from "../../shared/AppError";
+import { ValidationError } from "../../shared/AppError.js";
 
 const TRUCK_STATUS = [
   "AVAILABLE",

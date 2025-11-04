@@ -1,10 +1,10 @@
 import { Router } from "express";
-import * as deliveryPlacesController from "./deliveryPlaces.controller";
+import * as deliveryPlacesController from "./deliveryPlaces.controller.js";
 import {
   validateCreateDeliveryPlace,
   validateUpdateDeliveryPlace,
-} from "./deliveryPlaces.validators";
-import { authenticate } from "../../middlewares/auth.middleware";
+} from "./deliveryPlaces.validators.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 

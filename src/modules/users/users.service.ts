@@ -1,6 +1,6 @@
-import logger from "../../shared/logger";
-import { NotFoundError, ForbiddenError } from "../../shared/AppError";
-import prisma from "../../shared/prisma";
+import logger from "../../shared/logger.js";
+import { NotFoundError, ForbiddenError } from "../../shared/AppError.js";
+import prisma from "../../shared/prisma.js";
 
 export interface UpdateUserData {
   name?: string;

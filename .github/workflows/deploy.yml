@@ -1,0 +1,206 @@
+name: Validate, Build & Deploy
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  NODE_VERSION: "18"
+  REGISTRY: ghcr.io
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    name: Validate Code
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check TypeScript compilation
+        run: npm run build
+
+      - name: Validate Prisma schema
+        run: npx prisma validate
+
+  build:
+    runs-on: ubuntu-latest
+    name: Build Application
+    needs: validate
+
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-dist
+          path: dist/
+          retention-days: 1
+
+      - name: Generate build info
+        run: |
+          echo "Build completed at $(date)" > build-info.txt
+          echo "Commit: ${{ github.sha }}" >> build-info.txt
+          echo "Branch: ${{ github.ref }}" >> build-info.txt
+
+      - name: Upload build info
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-info
+          path: build-info.txt
+          retention-days: 1
+
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy to VPS
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    environment:
+      name: development
+      url: http://95.182.123.213/
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-dist
+          path: dist/
+
+      - name: Download build info
+        uses: actions/download-artifact@v4
+        with:
+          name: build-info
+
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts 2>/dev/null
+
+      - name: Create deployment package
+        run: |
+          mkdir -p deploy-package
+          cp -r dist/ deploy-package/
+          cp package.json deploy-package/
+          cp package-lock.json deploy-package/
+          cp -r prisma/ deploy-package/
+          cp .env.example deploy-package/
+          tar -czf app-release.tar.gz deploy-package/
+
+      - name: Upload to VPS
+        run: |
+          scp -P ${{ secrets.VPS_SSH_PORT }} \
+            app-release.tar.gz \
+            ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }}:~/app-release.tar.gz
+
+      - name: Deploy on VPS
+        run: |
+          ssh -p ${{ secrets.VPS_SSH_PORT }} ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} << 'EOF'
+          set -e
+
+          DEPLOY_DIR="/var/www/wscts-api/development"
+
+          # Extract release
+          cd ~
+          tar -xzf app-release.tar.gz
+
+          # Backup current deployment
+          if [ -d "$DEPLOY_DIR" ]; then
+            BACKUP_DIR="/var/www/wscts-api/backups/backup-$(date +%Y%m%d-%H%M%S)"
+            mkdir -p "$BACKUP_DIR"
+            cp -r "$DEPLOY_DIR"/* "$BACKUP_DIR/" || true
+            echo "Backup created: $BACKUP_DIR"
+          fi
+
+          # Create deploy directory if not exists
+          mkdir -p "$DEPLOY_DIR"
+
+          # Copy new build
+          cp -r deploy-package/dist "$DEPLOY_DIR/"
+          cp deploy-package/package.json "$DEPLOY_DIR/"
+          cp deploy-package/package-lock.json "$DEPLOY_DIR/"
+          cp -r deploy-package/prisma "$DEPLOY_DIR/"
+
+          # Install production dependencies
+          cd "$DEPLOY_DIR"
+          npm ci --omit=dev
+
+          # Run database migrations
+          npx prisma migrate deploy
+
+          # Restart application using PM2 or systemd
+          if command -v pm2 &> /dev/null; then
+            pm2 restart wscts-api || pm2 start dist/server.js --name wscts-api --env development
+          elif command -v systemctl &> /dev/null; then
+            sudo systemctl restart wscts-api
+          else
+            echo "Warning: No process manager found. Manual start required."
+          fi
+
+          # Cleanup
+          rm -rf ~/deploy-package ~/app-release.tar.gz
+
+          echo "Deployment completed successfully!"
+
+          EOF
+
+      - name: Verify deployment
+        run: |
+          sleep 5
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://${{ secrets.VPS_HOST }}:3000/health || echo "000")
+          if [ "$STATUS" = "200" ]; then
+            echo "✓ Health check passed"
+          else
+            echo "✗ Health check failed (Status: $STATUS)"
+            exit 1
+          fi
+
+      - name: Notify on success
+        if: success()
+        run: |
+          echo "✓ Deployment successful!"
+          echo "Commit: ${{ github.sha }}"
+          echo "Branch: ${{ github.ref }}"
+
+      - name: Notify on failure
+        if: failure()
+        run: |
+          echo "✗ Deployment failed!"
+          echo "Please check the logs above for more details."
+          exit 1

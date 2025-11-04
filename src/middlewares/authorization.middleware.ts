@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { ForbiddenError, UnauthorizedError } from "../shared/AppError";
-import { JWTPayload } from "../shared/types/common";
-import logger from "../shared/logger";
-import prisma from "../shared/prisma";
+import { ForbiddenError, UnauthorizedError } from "../shared/AppError.js";
+import { JWTPayload } from "../shared/types/common.js";
+import logger from "../shared/logger.js";
+import prisma from "../shared/prisma.js";
 
 type PermissionKey = string;
 

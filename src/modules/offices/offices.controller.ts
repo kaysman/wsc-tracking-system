@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import * as officesService from "./offices.service";
-import logger from "../../shared/logger";
+import * as officesService from "./offices.service.js";
+import logger from "../../shared/logger.js";
 
 export const createOffice = async (
   req: Request,

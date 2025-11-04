@@ -1,7 +1,7 @@
-import logger from "./shared/logger";
-import { env } from "./shared/env.config";
-import prisma from "./shared/prisma";
-import app from "./app";
+import logger from "./shared/logger.js";
+import { env } from "./shared/env.config.js";
+import prisma from "./shared/prisma.js";
+import app from "./app.js";
 
 const PORT = env.PORT;
 

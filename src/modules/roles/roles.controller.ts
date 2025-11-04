@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { JWTPayload } from "../../shared/types/common";
-import * as rolesService from "./roles.service";
+import { JWTPayload } from "../../shared/types/common.js";
+import * as rolesService from "./roles.service.js";
 
 export const create = async (
   req: Request,

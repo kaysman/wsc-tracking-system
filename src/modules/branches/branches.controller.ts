@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import * as branchesService from "./branches.service";
-import logger from "../../shared/logger";
+import * as branchesService from "./branches.service.js";
+import logger from "../../shared/logger.js";
 
 export const createBranch = async (
   req: Request,

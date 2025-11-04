@@ -2,23 +2,23 @@ import express, { Express } from "express";
 import cors from "cors";
 import helmet from "helmet";
 import bodyParser from "body-parser";
-import { env } from "./shared/env.config";
-import { requestLogger } from "./middlewares/requestLogger";
-import { errorHandler, notFound } from "./middlewares/errorHandler";
+import { env } from "./shared/env.config.js";
+import { requestLogger } from "./middlewares/requestLogger.js";
+import { errorHandler, notFound } from "./middlewares/errorHandler.js";
 import {
   globalRateLimiter,
   authRateLimiter,
-} from "./middlewares/rateLimit.middleware";
+} from "./middlewares/rateLimit.middleware.js";
 
 // Routes
-import authRoutes from "./modules/auth/auth.routes";
-import usersRoutes from "./modules/users/users.routes";
-import rolesRoutes from "./modules/roles/roles.routes";
-import officesRoutes from "./modules/offices/offices.routes";
-import branchesRoutes from "./modules/branches/branches.routes";
-import trucksRoutes from "./modules/trucks/trucks.routes";
-import deliveryPlacesRoutes from "./modules/deliveryPlaces/deliveryPlaces.routes";
-import deliveriesRoutes from "./modules/deliveries/deliveries.routes";
+import authRoutes from "./modules/auth/auth.routes.js";
+import usersRoutes from "./modules/users/users.routes.js";
+import rolesRoutes from "./modules/roles/roles.routes.js";
+import officesRoutes from "./modules/offices/offices.routes.js";
+import branchesRoutes from "./modules/branches/branches.routes.js";
+import trucksRoutes from "./modules/trucks/trucks.routes.js";
+import deliveryPlacesRoutes from "./modules/deliveryPlaces/deliveryPlaces.routes.js";
+import deliveriesRoutes from "./modules/deliveries/deliveries.routes.js";
 
 const app: Express = express();
 

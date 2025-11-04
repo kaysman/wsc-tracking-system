@@ -1,12 +1,12 @@
-import logger from "../../shared/logger";
-import { NotFoundError, ConflictError } from "../../shared/AppError";
+import logger from "../../shared/logger.js";
+import { NotFoundError, ConflictError } from "../../shared/AppError.js";
 import {
   CreateDeliveryRequest,
   UpdateDeliveryRequest,
   DeliveryFilters,
   DeliveryResponse,
-} from "./deliveries.types";
-import prisma from "../../shared/prisma";
+} from "./deliveries.types.js";
+import prisma from "../../shared/prisma.js";
 import { Prisma } from "@prisma/client";
 
 const mapDeliveryToResponse = (delivery: any): DeliveryResponse => ({

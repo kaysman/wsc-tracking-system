@@ -1,12 +1,12 @@
-import logger from "../../shared/logger";
-import { NotFoundError, ConflictError } from "../../shared/AppError";
+import logger from "../../shared/logger.js";
+import { NotFoundError, ConflictError } from "../../shared/AppError.js";
 import {
   CreateOfficeRequest,
   UpdateOfficeRequest,
   OfficeFilters,
   OfficeResponse,
-} from "./offices.types";
-import prisma from "../../shared/prisma";
+} from "./offices.types.js";
+import prisma from "../../shared/prisma.js";
 import { Prisma } from "@prisma/client";
 
 const mapOfficeToResponse = (office: any): OfficeResponse => ({

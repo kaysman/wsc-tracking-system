@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { JWTPayload } from "../../shared/types/common";
-import * as usersService from "./users.service";
+import { JWTPayload } from "../../shared/types/common.js";
+import * as usersService from "./users.service.js";
 
 export const getById = async (
   req: Request,

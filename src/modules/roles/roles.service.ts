@@ -1,12 +1,12 @@
-import logger from "../../shared/logger";
+import logger from "../../shared/logger.js";
 import {
   ConflictError,
   ForbiddenError,
   ValidationError,
   NotFoundError,
-} from "../../shared/AppError";
-import prisma from "../../shared/prisma";
-import { PERMISSIONS, isValidPermission } from "../../shared/permissions";
+} from "../../shared/AppError.js";
+import prisma from "../../shared/prisma.js";
+import { PERMISSIONS, isValidPermission } from "../../shared/permissions.js";
 
 export interface CreateRoleData {
   name: string;

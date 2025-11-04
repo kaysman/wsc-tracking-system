@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { ValidationError } from "../../shared/AppError";
+import { ValidationError } from "../../shared/AppError.js";
 
 const VALID_STATUSES = ["SCHEDULED", "IN_TRANSIT", "DELIVERED", "CANCELLED", "FAILED"];
 const VALID_PRIORITIES = ["LOW", "NORMAL", "URGENT"];

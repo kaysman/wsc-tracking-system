@@ -1,10 +1,10 @@
 import { Router } from "express";
-import * as officesController from "./offices.controller";
+import * as officesController from "./offices.controller.js";
 import {
   validateCreateOffice,
   validateUpdateOffice,
-} from "./offices.validators";
-import { authenticate } from "../../middlewares/auth.middleware";
+} from "./offices.validators.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 

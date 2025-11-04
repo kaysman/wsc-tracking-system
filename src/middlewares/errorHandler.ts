@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import logger from "../shared/logger";
-import { AppError, ValidationError } from "../shared/AppError";
-import { env } from "../shared/env.config";
+import logger from "../shared/logger.js";
+import { AppError, ValidationError } from "../shared/AppError.js";
+import { env } from "../shared/env.config.js";
 
 export const errorHandler = (
   err: Error,

@@ -1,11 +1,11 @@
 import { Router } from "express";
-import * as trucksController from "./trucks.controller";
+import * as trucksController from "./trucks.controller.js";
 import {
   validateCreateTruck,
   validateUpdateTruck,
   validateUpdateMaintenance,
-} from "./trucks.validators";
-import { authenticate } from "../../middlewares/auth.middleware";
+} from "./trucks.validators.js";
+import { authenticate } from "../../middlewares/auth.middleware.js";
 
 const router = Router();
 

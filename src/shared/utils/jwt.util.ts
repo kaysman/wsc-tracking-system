@@ -1,6 +1,6 @@
 import jwt, { Secret } from "jsonwebtoken";
 import { env } from "../env.config.js";
-import { JWTPayload } from "../types/common";
+import { JWTPayload } from "../types/common.js";
 
 export interface TokenPair {
   accessToken: string;

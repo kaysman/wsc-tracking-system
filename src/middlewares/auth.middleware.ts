@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
-import logger from "../shared/logger";
-import { UnauthorizedError } from "../shared/AppError";
-import { JWTPayload } from "../shared/types/common";
-import { env } from "../shared/env.config";
+import logger from "../shared/logger.js";
+import { UnauthorizedError } from "../shared/AppError.js";
+import { JWTPayload } from "../shared/types/common.js";
+import { env } from "../shared/env.config.js";
 
 declare global {
   namespace Express {

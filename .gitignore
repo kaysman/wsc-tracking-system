@@ -1,4 +1,4 @@
-# Microservice environment configs (keep the templates tracked)
+.env
 */.env
 */.env.*
 !*/.env.example
