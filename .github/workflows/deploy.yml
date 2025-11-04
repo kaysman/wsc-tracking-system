@@ -162,6 +162,9 @@ jobs:
             echo "Running database migrations..."
             npx prisma migrate deploy
 
+            echo "Running development seed..."
+            npx tsx prisma/seed.dev.ts
+
             echo "Restarting app..."
             if command -v pm2 &> /dev/null; then
               pm2 restart wscts-api || pm2 start dist/server.js --name wscts-api --env development

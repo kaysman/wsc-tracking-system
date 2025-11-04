@@ -11,7 +11,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
-    "prisma:seed:dev": "tsx prisma/seed.dev.ts"
+    "prisma:seed:dev": "npx tsx prisma/seed.dev.ts"
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",
