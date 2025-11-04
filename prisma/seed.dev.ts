@@ -1,8 +1,55 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcrypt";
-import { PERMISSION_GROUPS } from "../src/shared/permissions";
 
 const prisma = new PrismaClient();
+
+// All permissions from PERMISSION_GROUPS.ADMIN
+const ADMIN_PERMISSIONS = [
+  "users.create",
+  "users.read",
+  "users.update",
+  "users.delete",
+  "users.list",
+  "roles.create",
+  "roles.read",
+  "roles.update",
+  "roles.delete",
+  "roles.list",
+  "permissions.manage",
+  "offices.create",
+  "offices.read",
+  "offices.update",
+  "offices.delete",
+  "offices.list",
+  "branches.create",
+  "branches.read",
+  "branches.update",
+  "branches.delete",
+  "branches.list",
+  "trucks.create",
+  "trucks.read",
+  "trucks.update",
+  "trucks.delete",
+  "trucks.list",
+  "trucks.assign",
+  "deliveries.create",
+  "deliveries.read",
+  "deliveries.update",
+  "deliveries.delete",
+  "deliveries.list",
+  "deliveries.cancel",
+  "deliveries.complete",
+  "delivery_places.create",
+  "delivery_places.read",
+  "delivery_places.update",
+  "delivery_places.delete",
+  "delivery_places.list",
+  "reports.view",
+  "reports.export",
+  "analytics.view",
+  "logs.view",
+  "logs.export",
+];
 
 async function seedDevData() {
   console.log("\nStarting development database seed...");
@@ -24,7 +71,7 @@ async function seedDevData() {
           name: "SUPER_ADMIN",
           description:
             "Super Administrator with unrestricted access to all system features and data.",
-          permissions: PERMISSION_GROUPS.ADMIN as string[],
+          permissions: ADMIN_PERMISSIONS,
           isSystem: true,
           active: true,
         },
